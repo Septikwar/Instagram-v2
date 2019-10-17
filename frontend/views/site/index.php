@@ -1,8 +1,9 @@
 <?php
 
 /* @var $this yii\web\View */
-
+/* @var $users frontend\models\User */
 $this->title = 'My Yii Application';
+use yii\helpers\Url;
 ?>
 <div class="site-index">
 
@@ -15,7 +16,14 @@ $this->title = 'My Yii Application';
     </div>
 
     <div class="body-content">
-
+        <div class="row">
+            <div class="col-xs-12">
+                <?php foreach ($users as $user) : ?>
+                <a href="<?= Url::to(['user/profile/view', 'id' => $user->id]); ?>"><?= $user->username; ?></a>
+                <hr>
+                <?php endforeach; ?>
+            </div>
+        </div>
         <div class="row">
             <div class="col-lg-4">
                 <h2>Heading</h2>
