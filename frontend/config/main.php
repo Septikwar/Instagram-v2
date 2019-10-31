@@ -41,7 +41,8 @@ return [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
-                'profile/<nickname:\w+>' => 'user/profile/view'
+                'profile/edit/<nickname:\w+>' => 'user/profile/edit',
+                'profile/<nickname:\w+>' => 'user/profile/view',
             ],
         ],
         'redis' => [
@@ -50,7 +51,9 @@ return [
             'port' => 6379,
             'database' => 0,
         ],
-        
+        'storage' => [
+            'class' => 'frontend\components\Storage'
+        ],
     ],
     'modules' => [
         'user' => [
