@@ -1,11 +1,13 @@
 <?php
 
 namespace frontend\modules\user\controllers;
-
+use frontend\modules\user\models\forms\PictureForm;
 use frontend\models\User;
 use yii\web\Controller;
 use Yii;
 use Faker\Factory as Faker;
+use yii\web\UploadedFile;
+use yii\web\Response;
 
 class ProfileController extends Controller {
 
@@ -13,13 +15,37 @@ class ProfileController extends Controller {
         /*
          *  @var $currentUser User;
          */
+        $modelPicture = new PictureForm;
         $currentUser = Yii::$app->user->identity;
         return $this->render('view', [
             'user' => $this->findUser($nickname),
             'currentUser' => $currentUser,
+            'modelPicture' => $modelPicture,
         ]);
     }
 
+    public function actionUploadPicture()
+    {
+        
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        
+        $model = new PictureForm();
+        $model->picture = UploadedFile::getInstance($model, 'picture');
+        
+        if ($model->validate()) {
+            $user = Yii::$app->user->identity;
+            $user->picture = Yii::$app->storage->saveUploadedFile($model->picture);
+            
+            if ($user->save(false, ['picture'])) {
+                return [
+                    'success' => true,
+                    'pictureUri' => Yii::$app->storage->getFile($user->picture),
+                ];
+            }
+        }
+        return ['success' => false, 'errors' => $model->getErrors()];
+
+    }
     /*
      * @param string $nickname
      * @return User

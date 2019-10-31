@@ -2,7 +2,15 @@ html,
 body {
     height: 100%;
 }
-
+.display-none {
+    display: none;
+}
+#profile-picture {
+    width: 225px;
+    height: 225px;
+    border-radius: 50%;
+    object-fit: cover;
+}
 .wrap {
     min-height: 100%;
     height: auto;

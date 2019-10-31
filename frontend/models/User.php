@@ -6,6 +6,7 @@ use yii\base\NotSupportedException;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 use yii\web\IdentityInterface;
+use yii\helpers\ArrayHelper;
 
 /**
  * User model
@@ -30,7 +31,8 @@ class User extends ActiveRecord implements IdentityInterface
 {
     const STATUS_DELETED = 0;
     const STATUS_ACTIVE = 10;
-
+    
+    const DEFAULT_IMAGE = '/img/emptyuserphoto.png';
 
     /**
      * {@inheritdoc}
@@ -283,4 +285,28 @@ class User extends ActiveRecord implements IdentityInterface
         $ids = $redis->sinter($key1, $key2);
         return User::find()->select('id, username, nickname')->where(['id' => $ids])->orderBy('username')->asArray()->all();
     }
+    public function checkStatusSubscribe(User $user)
+    {
+        // Current user
+        $key1 = $this->getId();
+        // Given user followers
+        $key2 = "user:{$user->getId()}:followers";
+        /*
+         * @var $redis Connection
+         */
+        $redis = Yii::$app->redis;
+        $ids = $redis->smembers($key2);
+        
+        return ArrayHelper::isIn($key1, $ids);
+    }
+    
+    public function getPicture()
+    {
+        if ($this->picture) {
+            return Yii::$app->storage->getFile($this->picture);
+        }
+        return self::DEFAULT_IMAGE;
+    }
+    
+   
 }
