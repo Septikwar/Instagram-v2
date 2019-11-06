@@ -2,6 +2,7 @@
 /* @var $this yii\web\View */
 /* @var $post frontend\models\Post */
 
+use yii\web\JqueryAsset;
 use yii\helpers\Html;
 
 ?>
@@ -17,5 +18,18 @@ use yii\helpers\Html;
             <?php echo Html::encode($post->description); ?>
         </div>
     </div>
-    
+    <div class="row">
+        <span class="likes">Likes: <span><?php echo $post->countLikes(); ?></span></span>
+        <a href="#" class="btn btn-primary button-like <?php echo ($user && $post->isLikedBy($user)) ? "display-none" : ""; ?>" data-id="<?php echo $post->id; ?>">
+            Like <span class="glyphicon glyphicon-thumbs-up"></span>
+        </a>
+        <a href="#" class="btn btn-primary button-dislike <?php echo ($user && $post->isLikedBy($user)) ? "" : "display-none"; ?>" data-id="<?php echo $post->id; ?>">
+            Dislike <span class="glyphicon glyphicon-thumbs-down"></span>
+        </a>
+    </div>
 </div>
+
+
+<?php $this->registerJsFile('@web/js/likes.js', [
+    'depends' => JqueryAsset::className(),
+    ]);
