@@ -17,14 +17,15 @@ class PictureForm extends Model {
     public function rules() {
         return [
             [['picture'], 'file',
-            'extensions' => ['jpg'],
-            'checkExtensionByMimeType' => true
-                ],
+                'extensions' => ['jpg', 'png'],
+                'checkExtensionByMimeType' => true,
+                'maxSize' => Yii::$app->params['maxFileSize'],
+            ],
         ];
     }
 
-    public function save()
-    {
+    public function save() {
         return 1;
     }
+
 }

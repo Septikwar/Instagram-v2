@@ -41,8 +41,8 @@ return [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
-                'profile/edit/<nickname:\w+>' => 'user/profile/edit',
                 'profile/<nickname:\w+>' => 'user/profile/view',
+                'post/<id:\d+>' => 'post/default/view'
             ],
         ],
         'redis' => [
@@ -54,10 +54,14 @@ return [
         'storage' => [
             'class' => 'frontend\components\Storage'
         ],
+        
     ],
     'modules' => [
         'user' => [
             'class' => 'frontend\modules\user\module',
+        ],
+        'post' => [
+            'class' => 'frontend\modules\post\module',
         ],
     ],
     'params' => $params,

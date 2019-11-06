@@ -17,11 +17,12 @@ use dosamigos\fileupload\FileUpload;
             <hr>
         </div>
     </div>
+    
     <img src="<?= $user->getPicture(); ?>" alt="" id="profile-picture">
-<?php if ($currentUser->equals($user)) : ?>
+<?php if ($currentUser && $currentUser->equals($user)) : ?>
     <div class="alert alert-success display-none" id="profile-image-success">Profile image updated</div>
     <div class="alert alert-danger display-none" id="profile-image-fail"></div>
-
+    
     <?=
     FileUpload::widget([
         'model' => $modelPicture,
@@ -42,6 +43,8 @@ use dosamigos\fileupload\FileUpload;
         ],
     ]);
     ?>
+    
+    <a href="<?= Url::to(['/user/profile/delete-picture']); ?>" class="btn btn-danger">Delete Picture</a>
 <?php endif; ?>
     <div class="row" style="margin: 10px -15px;">
 <?php if (!Yii::$app->user->isGuest && $currentUser->getMutualsSubscriptionsTo($user)) : ?>
@@ -56,7 +59,7 @@ use dosamigos\fileupload\FileUpload;
             <?php endforeach; ?>
             </div>
 <?php endif; ?>
-<?php if ($user['id'] != $currentUser['id']) : ?>
+<?php if ($currentUser && !$currentUser->equals($user)) : ?>
             <div class="col-xs-12">
                 <h2>Profile subscribers & followers:</h2>
                 <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#subscribers">
@@ -70,7 +73,7 @@ use dosamigos\fileupload\FileUpload;
     <?php endif; ?>
     </div>
 
-            <?php if (!Yii::$app->user->isGuest && $user['id'] != $currentUser['id']) : ?>
+<?php if ($currentUser && !$currentUser->equals($user)) : ?>
         <div class="row">
             <div class="col-xs-12">
                 <?php if (!$currentUser->checkStatusSubscribe($user)) : ?>
