@@ -1,5 +1,6 @@
 <?php
 /* @var $this yii\web\View */
+/* @var $post frontend\models\Posts */
 /* @var $user frontend\models\User */
 /* @var $currentUser frontend\models\User */
 /* @var $pictureForm frontend\modules\user\models\forms\PictureForm */
@@ -17,20 +18,20 @@ use dosamigos\fileupload\FileUpload;
             <hr>
         </div>
     </div>
-    
+
     <img src="<?= $user->getPicture(); ?>" alt="" id="profile-picture">
-<?php if ($currentUser && $currentUser->equals($user)) : ?>
-    <div class="alert alert-success display-none" id="profile-image-success">Profile image updated</div>
-    <div class="alert alert-danger display-none" id="profile-image-fail"></div>
-    
-    <?=
-    FileUpload::widget([
-        'model' => $modelPicture,
-        'attribute' => 'picture',
-        'url' => ['/user/profile/upload-picture'], // your url, this is just for demo purposes,
-        'options' => ['accept' => 'image/*'],
-        'clientEvents' => [
-            'fileuploaddone' => 'function(e, data) {
+    <?php if ($currentUser && $currentUser->equals($user)) : ?>
+        <div class="alert alert-success display-none" id="profile-image-success">Profile image updated</div>
+        <div class="alert alert-danger display-none" id="profile-image-fail"></div>
+
+        <?=
+        FileUpload::widget([
+            'model' => $modelPicture,
+            'attribute' => 'picture',
+            'url' => ['/user/profile/upload-picture'], // your url, this is just for demo purposes,
+            'options' => ['accept' => 'image/*'],
+            'clientEvents' => [
+                'fileuploaddone' => 'function(e, data) {
             if (data.result.success) {
                 $("#profile-image-success").show();
                 $("#profile-image-fail").hide();
@@ -40,26 +41,26 @@ use dosamigos\fileupload\FileUpload;
                 $("#profile-image-success").hide();
             }
             }',
-        ],
-    ]);
-    ?>
-    
-    <a href="<?= Url::to(['/user/profile/delete-picture']); ?>" class="btn btn-danger">Delete Picture</a>
-<?php endif; ?>
+            ],
+        ]);
+        ?>
+
+        <a href="<?= Url::to(['/user/profile/delete-picture']); ?>" class="btn btn-danger">Delete Picture</a>
+    <?php endif; ?>
     <div class="row" style="margin: 10px -15px;">
-<?php if (!Yii::$app->user->isGuest && $currentUser->getMutualsSubscriptionsTo($user)) : ?>
+        <?php if (!Yii::$app->user->isGuest && $currentUser->getMutualsSubscriptionsTo($user) && $currentUser['id'] != $user['id']) : ?>
             <div class="col-xs-12">
 
                 <h4>Friends, who are also following <?= Html::encode($user->username); ?></h4>
 
                 <?php foreach ($currentUser->getMutualsSubscriptionsTo($user) as $item) : ?>
                     <a href="<?= Url::to(['/user/profile/view', 'nickname' => ($item['nickname']) ? $item['nickname'] : $item['id']]); ?>">
-                <?= Html::encode($item['username']); ?>
+                        <?= Html::encode($item['username']); ?>
                     </a>
-            <?php endforeach; ?>
+                <?php endforeach; ?>
             </div>
-<?php endif; ?>
-<?php if ($currentUser && !$currentUser->equals($user)) : ?>
+        <?php endif; ?>
+        <?php if ($currentUser) : ?>
             <div class="col-xs-12">
                 <h2>Profile subscribers & followers:</h2>
                 <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#subscribers">
@@ -70,20 +71,33 @@ use dosamigos\fileupload\FileUpload;
                 </button>
                 <hr>
             </div>
-    <?php endif; ?>
+        <?php endif; ?>
     </div>
 
-<?php if ($currentUser && !$currentUser->equals($user)) : ?>
+    <?php if ($currentUser && !$currentUser->equals($user)) : ?>
         <div class="row">
             <div class="col-xs-12">
                 <?php if (!$currentUser->checkStatusSubscribe($user)) : ?>
                     <a href="<?php echo Url::to(['/user/profile/subscribe', 'id' => $user->getId()]); ?>" class="btn btn-info">Subscribe</a>
-    <?php else : ?>
+                <?php else : ?>
                     <a href="<?php echo Url::to(['/user/profile/unsubscribe', 'id' => $user->getId()]); ?>" class="btn btn-info">Unsubscribe</a>
-        <?php endif; ?>
+                <?php endif; ?>
             </div>
         </div>
-<?php endif; ?>
+    <?php endif; ?>
+    <?php if ($posts) : ?>
+        <div class="row">
+            <?php foreach ($posts as $post) : ?>
+                <div class="col-sm-4">
+                    <a href="<?php echo $post->getLink(); ?>" class="image">
+                        <img src="<?php echo $post->getImage(); ?>" alt="">
+                        <span><?php echo $post->getDescription(); ?></span>
+                    </a>
+                    <div class="likes"><?php echo $post->countLikes(); ?></div>
+                </div>
+            <?php endforeach; ?>
+        </div>
+    <?php endif; ?>
 </div>
 
 
@@ -96,9 +110,9 @@ use dosamigos\fileupload\FileUpload;
                 <h4 class="modal-title" id="myModalLabel">Subscribers</h4>
             </div>
             <div class="modal-body">
-<?php foreach ($user->getSubscriptions() as $subscribers) : ?>
+                <?php foreach ($user->getSubscriptions() as $subscribers) : ?>
                     <a href="<?= Url::to(['/user/profile/view', 'nickname' => ($subscribers['nickname']) ? $subscribers['nickname'] : $subscribers['id']]); ?>"><?= Html::encode($subscribers['username']); ?></a><br>
-<?php endforeach; ?>
+                <?php endforeach; ?>
             </div>
         </div>
     </div>
@@ -113,9 +127,9 @@ use dosamigos\fileupload\FileUpload;
                 <h4 class="modal-title" id="myModalLabel">Subscribers</h4>
             </div>
             <div class="modal-body">
-<?php foreach ($user->getFollowers() as $followers) : ?>
+                <?php foreach ($user->getFollowers() as $followers) : ?>
                     <a href="<?= Url::to(['/user/profile/view', 'nickname' => ($followers['nickname']) ? $followers['nickname'] : $followers['id']]); ?>"><?= Html::encode($followers['username']); ?></a><br>
-<?php endforeach; ?>
+                <?php endforeach; ?>
             </div>
         </div>
     </div>

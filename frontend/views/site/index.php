@@ -1,61 +1,53 @@
 <?php
-
+/* @var $feed[] frontend\models\Feed */
+/* @var $currentUser frontend\models\User */
 /* @var $this yii\web\View */
-/* @var $users frontend\models\User */
 $this->title = 'My Yii Application';
+
+use yii\web\JqueryAsset;
+use yii\helpers\Html;
+use yii\helpers\HtmlPurifier;
 use yii\helpers\Url;
 ?>
 <div class="site-index">
+    <?php if ($feed) : ?>
+        <?php foreach ($feed as $item) : ?>
+            <?php /* @var $item Feed */ ?>
+            <div class="row">
+                <div class="col-md-12">
+                    <img src="<?php echo $item->author_picture; ?>" width="30" height="30" alt="">
+                    <a href="<?php echo Url::to(['/user/profile/view', 'nickname' => ($item->author_nickname) ? $item->author_nickname : $item->author_id]); ?>">
+                        <?php echo Html::encode($item->author_name); ?>
+                    </a>
+                </div>
 
-    <div class="jumbotron">
-        <h1>Congratulations!</h1>
-
-        <p class="lead">You have successfully created your Yii-powered application.</p>
-
-        <p><a class="btn btn-lg btn-success" href="http://www.yiiframework.com">Get started with Yii</a></p>
-    </div>
-
-    <div class="body-content">
-        <div class="row">
-            <div class="col-xs-12">
-                <?php foreach ($users as $user) : ?>
-                <a href="<?= Url::to(['user/profile/view', 'nickname' => $user->getNickname()]); ?>"><?= $user->username; ?></a>
+                <div class="col-md-12">
+                    <img src="<?php echo Yii::$app->storage->getFile($item->post_filename); ?>" alt="">
+                </div>
+                <div class="col-md-12">
+                    <?php echo HtmlPurifier::process($item->post_description); ?>
+                </div>
+                <div class="col-md-12">
+                    <?php echo Yii::$app->formatter->asDatetime($item->post_created_at); ?>
+                </div>
+                
+                <div class="col-md-12 likes-container">
+                    <span class="likes">Likes: <span><?php echo $item->countLikes(); ?></span></span>
+                    <a href="#" class="btn btn-primary button-like <?php echo ($currentUser->likesPost($item->post_id)) ? "display-none" : ""; ?>" data-id="<?php echo $item->post_id; ?>">
+                        Like <span class="glyphicon glyphicon-thumbs-up"></span>
+                    </a>
+                    <a href="#" class="btn btn-primary button-dislike <?php echo ($currentUser->likesPost($item->post_id)) ? "" : "display-none"; ?>" data-id="<?php echo $item->post_id; ?>">
+                        Dislike <span class="glyphicon glyphicon-thumbs-down"></span>
+                    </a>
+                </div>
                 <hr>
-                <?php endforeach; ?>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-lg-4">
-                <h2>Heading</h2>
-
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-                    dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-                    ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-                    fugiat nulla pariatur.</p>
-
-                <p><a class="btn btn-default" href="http://www.yiiframework.com/doc/">Yii Documentation &raquo;</a></p>
-            </div>
-            <div class="col-lg-4">
-                <h2>Heading</h2>
-
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-                    dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-                    ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-                    fugiat nulla pariatur.</p>
-
-                <p><a class="btn btn-default" href="http://www.yiiframework.com/forum/">Yii Forum &raquo;</a></p>
-            </div>
-            <div class="col-lg-4">
-                <h2>Heading</h2>
-
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-                    dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-                    ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-                    fugiat nulla pariatur.</p>
-
-                <p><a class="btn btn-default" href="http://www.yiiframework.com/extensions/">Yii Extensions &raquo;</a></p>
-            </div>
-        </div>
-
-    </div>
+        <?php endforeach; ?>
+    <?php else : ?>
+        <div class="col-md-12">Nobody posted yet</div>               
+    <?php endif; ?>
 </div>
+
+<?php $this->registerJsFile('@web/js/likes.js', [
+    'depends' => JqueryAsset::className(),
+    ]);

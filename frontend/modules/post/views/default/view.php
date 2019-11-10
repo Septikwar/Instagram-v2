@@ -1,7 +1,9 @@
 <?php
 /* @var $this yii\web\View */
 /* @var $post frontend\models\Post */
+/* @var $comments frontend\models\Comments */
 
+use yii\widgets\ActiveForm;
 use yii\web\JqueryAsset;
 use yii\helpers\Html;
 
@@ -18,7 +20,7 @@ use yii\helpers\Html;
             <?php echo Html::encode($post->description); ?>
         </div>
     </div>
-    <div class="row">
+    <div class="row likes-container">
         <span class="likes">Likes: <span><?php echo $post->countLikes(); ?></span></span>
         <a href="#" class="btn btn-primary button-like <?php echo ($user && $post->isLikedBy($user)) ? "display-none" : ""; ?>" data-id="<?php echo $post->id; ?>">
             Like <span class="glyphicon glyphicon-thumbs-up"></span>
@@ -28,7 +30,6 @@ use yii\helpers\Html;
         </a>
     </div>
 </div>
-
 
 <?php $this->registerJsFile('@web/js/likes.js', [
     'depends' => JqueryAsset::className(),

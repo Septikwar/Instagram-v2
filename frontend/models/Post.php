@@ -3,6 +3,7 @@
 namespace frontend\models;
 
 use Yii;
+use yii\helpers\Url;
 
 /**
  * This is the model class for table "post".
@@ -56,6 +57,14 @@ class Post extends \yii\db\ActiveRecord
         return $this->hasOne(User::className(), ['id' => 'user_id']);
     }
     
+    public function getDescription() 
+    {
+        return $this->description;
+    }
+    public function getLink()
+    {
+        return '/post/'. $this->id;
+    }
     public function like(User $user)
     {
         /* @var $redis Connection */

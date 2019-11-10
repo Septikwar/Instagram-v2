@@ -13,12 +13,16 @@ use yii\web\Response;
  */
 class DefaultController extends Controller
 {
+    
     /**
      * Renders the index view for the module
      * @return string
      */
     public function actionCreate()
     {
+        if (Yii::$app->user->isGuest) {
+            return $this->redirect(['/user/default/login']);
+        }
         $model = new PostForm(Yii::$app->user->identity);
         
         if ($model->load(Yii::$app->request->post())) {
@@ -44,7 +48,7 @@ class DefaultController extends Controller
         $user = Yii::$app->user->identity;
         return $this->render('view', [
            'post' => $this->findPost($id),
-           'user' => $user
+           'user' => $user,
         ]);
     }
     
@@ -57,8 +61,8 @@ class DefaultController extends Controller
             
     private function findPost($id)
     {
-        if ($user = Post::findOne($id)) {
-            return $user;
+        if ($post = Post::findOne($id)) {
+            return $post;
         }
         throw new NotFoundHttpException();
     }

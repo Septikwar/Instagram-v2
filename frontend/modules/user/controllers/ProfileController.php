@@ -5,6 +5,7 @@ use frontend\modules\user\models\forms\PictureForm;
 use frontend\models\User;
 use yii\web\Controller;
 use Yii;
+use frontend\models\Post;
 use Faker\Factory as Faker;
 use yii\web\UploadedFile;
 use yii\web\Response;
@@ -17,10 +18,12 @@ class ProfileController extends Controller {
          */
         $modelPicture = new PictureForm;
         $currentUser = Yii::$app->user->identity;
+        $posts = Post::find()->where(['user_id' => $nickname])->all();
         return $this->render('view', [
             'user' => $this->findUser($nickname),
             'currentUser' => $currentUser,
             'modelPicture' => $modelPicture,
+            'posts'  => $posts,
         ]);
     }
 
