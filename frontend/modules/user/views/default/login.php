@@ -12,7 +12,7 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="site-login">
     <h1><?= Html::encode($this->title) ?></h1>
 
-    <p>Please fill out the following fields to login:</p>
+    <p>Для входа под тестовым пользователем используйте testuser1@mail.ru:123456</p>
 
     <div class="row">
         <div class="col-lg-5">

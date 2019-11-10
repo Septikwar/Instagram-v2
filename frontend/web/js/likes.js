@@ -6,10 +6,9 @@ $(document).ready(function () {
         }
         $.post('/post/default/like', params, function (data) {
             if (data.success) {
-                console.log($(this));
                 button.hide();
-                button.next('.button-dislike').show();
-                button.parents('.likes-container').find('.likes span').text(data.likes);
+                button.parent().find('.button-dislike').show();
+                button.parents('.likes-container').find('.likes').text(data.likes);
             }
         });
         return false;
@@ -21,8 +20,8 @@ $(document).ready(function () {
         }
         $.post('/post/default/dislike', params, function (data) {
             button.hide();
-            button.prev('.button-like').show();
-            button.parents('.likes-container').find('.likes span').text(data.likes);
+            button.parent().find('.button-like').show();
+            button.parents('.likes-container').find('.likes').text(data.likes);
         });
         return false;
     })
