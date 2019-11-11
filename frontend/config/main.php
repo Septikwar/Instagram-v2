@@ -46,15 +46,6 @@ return [
                 '/' => 'site/index'
             ],
         ],
-        'redis' => [
-            'class' => 'yii\redis\Connection',
-            'hostname' => 'localhost',
-            'port' => 6379,
-            'database' => 0,
-        ],
-        'storage' => [
-            'class' => 'frontend\components\Storage'
-        ],
         'feedService' => [
             'class' => 'frontend\components\FeedService',
         ],

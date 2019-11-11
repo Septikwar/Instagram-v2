@@ -1,6 +1,6 @@
 <?php
 
-namespace frontend\components;
+namespace common\components;
 use yii\base\Component;
 use yii\web\UploadedFile;
 use yii\helpers\FileHelper;

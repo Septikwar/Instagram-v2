@@ -1,5 +1,5 @@
 <?php
-namespace common\models;
+namespace backend\models;
 
 use Yii;
 use yii\base\NotSupportedException;
@@ -83,6 +83,17 @@ class User extends ActiveRecord implements IdentityInterface
     public static function findByUsername($username)
     {
         return static::findOne(['username' => $username, 'status' => self::STATUS_ACTIVE]);
+    }
+    
+    /**
+     * Finds user by email
+     *
+     * @param string $email
+     * @return static|null
+     */
+    public static function findByEmail($email)
+    {
+        return static::findOne(['email' => $email, 'status' => self::STATUS_ACTIVE]);
     }
 
     /**
